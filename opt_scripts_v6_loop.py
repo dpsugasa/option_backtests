@@ -62,6 +62,8 @@ temp2   = {} #additional dict of temp dataframes
 tot_ser = {} #df for all options series per strategy
 m       = {} #df for option ref data
 n       = {} #temp df
+quants= []
+
 
 for direct in dirs2:
     path = f"D:\\Users\\dpsugasa\\option_backtests\\options\\{direct}"
@@ -76,7 +78,6 @@ for direct in dirs2:
 
         tkr[file] = ts[file]['Ticker'].unique().tolist()
     
-        opt1_qtty = 2325
 
         # set securities, and fields
         IDs = tkr[file]
@@ -88,8 +89,9 @@ for direct in dirs2:
         temp2 = {} #additional dict of temp dataframes
     
         ref_data = ['OPTION_ROOT_TICKER', 'OPT_MULTIPLIER', 'OPT_UNDL_PX',
-                    'COMPANY_CORP_TICKER']
-    
+                    'COMPANY_CORP_TICKER', 'CRNCY']
+        
+
         #get initial prices in 'd', create a temp dataframe with entry/exit dates,
         #   price, and expiry for each ticker
         for name in IDs:
@@ -104,6 +106,18 @@ for direct in dirs2:
             
             m[file, name] = LocalTerminal.get_reference_data(name, ref_data).as_frame()
             n[file] = LocalTerminal.get_reference_data(name, ref_data).as_frame()
+        
+        #set option qtty equal to $1mm USD worth of bonds so they can be compared in 'return space'
+        opt_curr = n[file]['CRNCY'].item() + " CURNCY"
+        curr_px = LocalTerminal.get_reference_data(opt_curr, 'PX_LAST').as_frame().values.item()
+        multy = n[file]['OPT_MULTIPLIER'].item()
+        undl = n[file]['OPT_UNDL_PX'].item()
+        bond_size = 1000000.0 #1m USD
+        opt1_qtty = np.round(((bond_size/curr_px)/(multy*undl)))
+        
+        for l in IDs:
+            quants.append(opt1_qtty)
+        
         
         #because some of the price info does not extend to maturity, make new pricing
         #    dataframes that have the full price set, including expiry value = 'd2'
