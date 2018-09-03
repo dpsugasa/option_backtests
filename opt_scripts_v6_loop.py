@@ -161,17 +161,11 @@ for direct in dirs2:
                 d2[file, i]['prev_pos'].loc[z] = d2[file, i]['pos'].iloc[prev]
                 if row['trade'] == 1.0:
                     d2[file, i]['pos'].loc[z] = 1.0 + d2[file, i]['prev_pos'].loc[z]
-                    #d2[i]['prev_pos'].loc[z] = d2[i]['pos'].iloc[prev]
                 elif row['trade'] == -1.0:
                     d2[file, i]['pos'].loc[z] = -1.0 + d2[file, i]['prev_pos'].loc[z]
-                    #d2[i]['prev_pos'].loc[z] = d2[i]['pos'].iloc[prev]
                 else:
                     d2[file, i]['pos'].loc[z] = d2[file, i]['prev_pos'].loc[z]
-                    #d2[i]['pos'].loc[z] = d2[i]['pos_chg'].iloc[prev]
-                
-            #d2[i]['pos'] = d2[i]['pos_chg'].shift() + d2[i]['trade'] 
-            #d2[i]['pos'][0] = 0.0 
-        
+                      
             d2[file, i]['shares'] = temp[file, i]['Shares'].iloc[0]
             d2[file, i]['qtty'] = opt1_qtty
         
@@ -199,9 +193,6 @@ for direct in dirs2:
                 d2[file, i]['pos_val'] + d2[file, i]['cash_val']  
             d2[file, i] =  d2[file, i].truncate(after = end_date)           
     
-        end = []
-        for i in IDs:
-            end.append(d2[file, i]['total_val'].tail(1).values)
     
         frames = []
         for i in IDs:   
@@ -244,7 +235,6 @@ for direct in dirs2:
                  f'option_backtest/{root_tkr}/{file_name}/{file_name}_{date_now}')
     
     b = {}
-     #traces = []
     for file in dirs:
         b[file] = create_trace(tot_ser[file]['port_val'], file)
             
