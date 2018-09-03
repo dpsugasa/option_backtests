@@ -27,18 +27,23 @@ start_time = datetime.now()
 # set dates to grab data
 start_date = '01/01/2012'
 end_date = "{:%m/%d/%Y}".format(datetime.now())
+date_now = "{:%m_%d_%Y}".format(datetime.now())
 
 # Files in Option Directory
 path = "D:\\Users\\dpsugasa\\option_backtests\\SAN_options"
 dirs = os.listdir(path)
 
+path2 = "D:\\Users\\dpsugasa\\option_backtests\\options"
+dirs2 = os.listdir(path2)
+
 ts      = {} #dict for trades
 tkr     = {} #dict for tickers
-px       = {} #dict of original dataframes per ID
-px2      = {} #final dict of a prices
+px      = {} #dict of original dataframes per ID
+px2     = {} #final dict of a prices
 temp    = {} #dict of temp dataframes
 temp2   = {} #additional dict of temp dataframes 
 tot_ser = {} #df for all options series per strategy
+m       = {} #df for option ref data
 
 
 for file in dirs:
@@ -61,6 +66,8 @@ for file in dirs:
     d2 = {} #final dict of a prices
     temp = {} #dict of temp dataframes
     temp2 = {} #additional dict of temp dataframes
+    
+    ref_data = ['OPTION_ROOT_TICKER', 'OPT_MULTIPLIER', 'OPT_UNDL_PX']
 
     #get initial prices in 'd', create a temp dataframe with entry/exit dates,
     #   price, and expiry for each ticker
@@ -73,6 +80,8 @@ for file in dirs:
             'Amount', 'Expiry', 'Direction','Shares']]
         temp[file, name].index = temp[file, name].Date
         temp[file, name] = temp[file, name].drop('Date', axis=1)
+        
+        m[file, name] = LocalTerminal.get_reference_data(name, ref_data).as_frame()
     
     #because some of the price info does not extend to maturity, make new pricing
     #    dataframes that have the full price set, including expiry value = 'd2'
@@ -188,8 +197,9 @@ for file in dirs:
                 line = dict(
                         color = ('#4155f4'),
                         width = 1.5))        
-        
-    layout  = {'title' : 'Booty Jams',
+    root_tkr = m[file, i]['OPTION_ROOT_TICKER']
+    file_name = file.replace('.csv','')    
+    layout  = {'title' : f'{file_name}_{date_now}',
                    'xaxis' : {'title' : 'Date', 'type': 'date'},
                    'yaxis' : {'title' : 'PNL'},
 #                   'shapes': [{'type': 'rect',
@@ -207,7 +217,8 @@ for file in dirs:
                    }
     data = [trace1]
     figure = go.Figure(data=data, layout=layout)
-    py.iplot(figure, filename = f'option_backtest/{file}')
+    py.iplot(figure, filename =\
+             f'option_backtest/{file_name}/{file_name}_{date_now}')
 
 
 
