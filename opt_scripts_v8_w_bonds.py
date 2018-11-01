@@ -49,7 +49,7 @@ date_now = "{:%m_%d_%Y}".format(datetime.now())
 
 # Files in Option Directory
 
-path2 = "D:\\Users\\dpsugasa\\option_backtests\\options"
+path2 = "C:\\Users\\dpsugasa\\WorkFiles\\option_backtests\\options"
 dirs2 = os.listdir(path2)
 
 #path = f"D:\\Users\\dpsugasa\\option_backtests\\options\\{direct}"
@@ -68,10 +68,10 @@ quants= []
 
 
 for direct in dirs2:
-    path = f"D:\\Users\\dpsugasa\\option_backtests\\options\\{direct}"
+    path = f"C:\\Users\\dpsugasa\\WorkFiles\\option_backtests\\options\\{direct}"
     dirs = os.listdir(path)
     for file in dirs:
-        curr_path = fr'D:\Users\dpsugasa\option_backtests\options\{direct}/{file}'
+        curr_path = fr'C:\Users\dpsugasa\WorkFiles\option_backtests\options\{direct}/{file}'
         ts[file] = pd.read_csv(curr_path)
         ts[file].Date = pd.to_datetime(ts[file].Date)
         ts[file].Expiry = pd.to_datetime(ts[file].Expiry)
@@ -249,7 +249,7 @@ start_date = '01/01/2005'
 end_date = "{:%m/%d/%Y}".format(datetime.now())
 
 IDs = []
-reader = DictReader(open(r'D:\Users\dpsugasa\AT1\Tearsheets\bonds_mini.csv'))
+reader = DictReader(open(r'C:\Users\dpsugasa\WorkFiles\AT1\Tearsheets\bonds_mini.csv'))
 for line in reader:
     IDs.append(line)
 
